@@ -33,17 +33,18 @@ void setup() {
 
 void loop() {
   // read the state of the pushbutton value:
-  input1 = digitalRead(buttonPin);
-  input2 = digitalRead(button2Pin);
+  // wired differently than yesterday
+  input1 = digitalRead(button2Pin);
+  input2 = digitalRead(buttonPin);
   float output = 0; // output as a 0, but that doesn't really matter
 
   output = fir.process(input1);    // here we call the fir routine with the input. The value 'fir' spits out is stored in the output variable.
   
-  Serial.print(input1);
-  Serial.print(",");
-  Serial.print(input2);
-  Serial.print(",");
-  Serial.println(output);
+//  Serial.print(input1);
+//  Serial.print(",");
+//  Serial.print(input2);
+//  Serial.print(",");
+//  Serial.println(output);
   int signal = detectSignal(input1, input2);
 
   if (signal == ACTIVE) {
