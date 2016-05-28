@@ -1,4 +1,6 @@
-#include <FiniteStateMachine.h>
+#include <FIR.h>
+#define FILTERTAPS 5
+FIR fir;
 
 const int buttonPin = 2;     // the number of the pushbutton pin
 const int button2Pin = 3;
@@ -20,15 +22,28 @@ void setup() {
   pinMode(buttonPin, INPUT);
   pinMode(button2Pin, INPUT);
   lastChanged = millis();
+
+  float coef[FILTERTAPS] = { 0.021, 0.096, 0.146, 0.096, 0.021};
+  fir.setCoefficients(coef);
+
+    //declare gain coefficient to scale the output back to normal
+  float gain = 0.38; // set to 1 and input unity to see what this needs to be
+  fir.setGain(gain);
 }
 
 void loop() {
   // read the state of the pushbutton value:
   input1 = digitalRead(buttonPin);
   input2 = digitalRead(button2Pin);
+  float output = 0; // output as a 0, but that doesn't really matter
+
+  output = fir.process(input1);    // here we call the fir routine with the input. The value 'fir' spits out is stored in the output variable.
+  
   Serial.print(input1);
   Serial.print(",");
-  Serial.println(input2);
+  Serial.print(input2);
+  Serial.print(",");
+  Serial.println(output);
   int signal = detectSignal(input1, input2);
 
   if (signal == ACTIVE) {
