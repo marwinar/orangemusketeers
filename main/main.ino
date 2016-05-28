@@ -1,3 +1,5 @@
+#include <Bounce2.h>
+
 #include <FIR.h>
 #define FILTERTAPS 5
 FIR fir;
@@ -14,6 +16,9 @@ unsigned long lastChanged;
 int minInterval = 1000; // minimal time in milliseconds
 boolean waitedLongEnough = false;
 
+// Instantiate a Bounce object
+Bounce debouncer = Bounce(); 
+
 void setup() {
   Serial.begin(9600);
   // initialize the LED pin as an output:
@@ -21,6 +26,9 @@ void setup() {
   // initialize the pushbutton pin as an input:
   pinMode(buttonPin, INPUT);
   pinMode(button2Pin, INPUT);
+  debouncer.attach(button2Pin);
+  debouncer.interval(5);
+  
   lastChanged = millis();
 
   float coef[FILTERTAPS] = { 0.021, 0.096, 0.146, 0.096, 0.021};
@@ -34,10 +42,17 @@ void setup() {
 void loop() {
   // read the state of the pushbutton value:
   // wired differently than yesterday
-  input1 = digitalRead(button2Pin);
-  input2 = digitalRead(buttonPin);
-  float output = 0; // output as a 0, but that doesn't really matter
 
+  // Update the Bounce instance :
+  debouncer.update();
+
+  // Get the updated value - debounced version:
+  int value = debouncer.read();
+  
+  input1 = value;
+  input2 = digitalRead(buttonPin);
+  
+  float output = 0; // output as a 0, but that doesn't really matter
   output = fir.process(input1);    // here we call the fir routine with the input. The value 'fir' spits out is stored in the output variable.
   
 //  Serial.print(input1);

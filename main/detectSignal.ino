@@ -6,9 +6,7 @@ int count = 0;
 int flickCount = 0;
 
 int detectSignal(int input1, int input2) {
-  // possible states
-  // waiting
-  
+ 
   diff = input1 - previousInput1;
   previousInput1 = input1;
   count++;
